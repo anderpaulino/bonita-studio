@@ -15,6 +15,7 @@
 package org.bonitasoft.studio.common.properties;
 
 import org.bonitasoft.studio.common.Messages;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IContributionManager;
 import org.eclipse.jface.dialogs.Dialog;
@@ -42,6 +43,7 @@ public class TogglePropertyHelpContributionItem implements IContributionItem {
     private final FormToolkit toolkit;
     private Label decriptionLabel;
     private MenuItem menuItem;
+    private Composite descriptionContainer;
 
     public TogglePropertyHelpContributionItem(final FormToolkit toolkit, final Form form, final String helpContent) {
         this.helpContent = helpContent;
@@ -115,20 +117,21 @@ public class TogglePropertyHelpContributionItem implements IContributionItem {
 
     protected void toggleHelp() {
         if (decriptionLabel != null) {
+            descriptionContainer.dispose();
             decriptionLabel.dispose();
             form.setHeadClient(null);
             decriptionLabel = null;
+            descriptionContainer = null;
             if (menuItem != null) {
                 menuItem.setText(Messages.showHelp);
             }
         } else {
-            decriptionLabel = toolkit.createLabel(form.getHead(), helpContent, SWT.WRAP);
-            form.setHeadClient(decriptionLabel);
+            descriptionContainer = new Well(form.getHead(), helpContent, toolkit, IStatus.INFO);
+            form.setHeadClient(descriptionContainer);
             if (menuItem != null) {
                 menuItem.setText(Messages.hideHelp);
             }
         }
-        form.getParent().getParent().layout(true, true);
     }
 
     @Override
